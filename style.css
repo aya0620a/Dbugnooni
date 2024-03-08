@@ -1,0 +1,27 @@
+#nextplayer{
+    font-size: 30px;
+    color: green;
+    margin: 20px;
+    text-align: center;
+}
+
+#gameboard{
+    width: 1000px;
+    height: 1000px;
+    text-align: center;
+    background-color: #a89595;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    text-align: center;
+    padding: 100px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.cardback{
+    background-image: url(cardback.jpg);
+    background-size: cover;
+    width: 100px;  /* カードの幅を設定 */
+    height: 150px; /* カードの高さを設定 */
+}
