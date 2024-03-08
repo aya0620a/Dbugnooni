@@ -1,4 +1,3 @@
-
 function start(){
     alert("Hello World!");
 }
@@ -37,3 +36,18 @@ function shuffle(shuffledCards){
         shuffledCards[i] = temp;
     }
 }
+
+    alert("Hello World!")
+    localStorage.setItem('key','mbti')
+    message = localStorage.getItem('key')
+    alert(message)
+}
+
+const nextbutoon=document.getElementById('next');
+nextbutoon.addEventListener('click',function(){
+    location.href="index3.html"
+})
+
+
+
+
