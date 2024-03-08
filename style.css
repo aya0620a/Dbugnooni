@@ -1,11 +1,8 @@
 
-body{
-    
+body{ 
     background-image: url(image.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-    
-
 }
 /*スタート画面*/
 .button{
@@ -20,4 +17,23 @@ body{
     text-align: center;
     color:aqua;
     font-size: 3rem;
+}
+h1{
+    background-color: black;
+    text-align: center;
+    color:white;
+    font-family: serif;
+}
+main{
+    color:white;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: serif;
+    width:350px;
+    margin:auto;
+}
+p#num{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
