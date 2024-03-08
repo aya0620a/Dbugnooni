@@ -5,15 +5,11 @@ function start(){
     alert(message)
 }
 
-const nextbutoon=document.getElementByIde('next');
+const nextbutoon=document.getElementById('next');
 nextbutoon.addEventListener('click',function(){
     location.href="index3.html"
 })
 
 
-//スタート画面でボタンを押したときの処理
-const button = document.getElementById('button');
-button.addEventListener('click',function(){
-    location.href = "index2.html";
-})
+
 
