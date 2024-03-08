@@ -1,6 +1,6 @@
 
 body{ 
-    background-image: url(image.jpg);
+    background-image: url(haikei.jpg);
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -19,7 +19,7 @@ body{
     font-size: 3rem;
 }
 h1{
-    background-color: black;
+    background-color:rgb(0 0 0 / 40%);
     text-align: center;
     color:white;
     font-family: serif;
@@ -36,4 +36,34 @@ p#num{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+#next{
+    text-align: right;
+}
+#next button {
+    color: white;
+    background-color: darkgreen;
+    padding: 5px 20px;
+    margin-top: 30px;
+    margin-right: 110px;
+}
+table#point{
+    text-shadow: gray 2px 2px 4px;
+    font-size: 2em;
+    font-family: serif;
+    font-weight: bold;
+    margin: auto;
+    margin-top: 100px;
+    background-color: rgb(255 255 255/82%);
+
+}
+th {
+    padding-left: 10px;
+    padding-right: 100px;
+}
+tr{
+    line-height: 2;
+}
+td{
+    padding-right: 10px;
 }
