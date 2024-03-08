@@ -1,0 +1,14 @@
+/*スタート画面*/
+.button{
+    padding: 100px 250px;
+    border: black 4px solid;
+    font-size: 2rem;
+    text-align: center;
+    display: block;
+    margin: auto;
+}
+.title{
+    text-align: center;
+    color:aqua;
+    font-size: 3rem;
+}
