@@ -19,7 +19,6 @@ window.onload = function(){
         card.className = "cardback";
         card.id = "card" + i;
         card.number = shuffledCards[i];
-        card.src = "cardback.png";
         document.getElementById("gameboard").appendChild(card);
         }
 }
@@ -45,7 +44,7 @@ function shuffle(shuffledCards){
 
 const nextbutoon=document.getElementById('next');
 nextbutoon.addEventListener('click',function(){
-    location.href="index3.html"
+    location.href="game.html"
 })
 
 

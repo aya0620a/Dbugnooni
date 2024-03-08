@@ -45,22 +45,23 @@ p#num{
 }
 
 #gameboard{
-    width: 1000px;
-    height: 1000px;
+    width: 90%;
+    height: 2200px;
     text-align: center;
     background-color: #a89595;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 0;
     text-align: center;
-    padding: 100px;
-    margin: auto;
+    margin: 5%;
     overflow: hidden;
+    justify-items: center;
+    background-position: center;
 }
 
 .cardback{
     background-image: url(cardback.jpg);
     background-size: cover;
-    width: 100px;  /* カードの幅を設定 */
-    height: 150px; /* カードの高さを設定 */
+    width: 75%;  /* カードの幅を設定 */
+    height: 300px; /* カードの高さを設定 */
 }
