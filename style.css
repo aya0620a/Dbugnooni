@@ -36,6 +36,7 @@ p#num{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
 #nextplayer{
     font-size: 30px;
     color: green;
