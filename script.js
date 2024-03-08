@@ -3,5 +3,5 @@ function start(){
 }
 const button = document.getElementById('button');
 button.addEventListener('click',function(){
-    location.href = "input.html";
+    location.href = "index2.html";
 })
