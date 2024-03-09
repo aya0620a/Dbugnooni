@@ -83,16 +83,7 @@ const cards = [{
 
 let currentUsers = 0;
 
-let users = [{
-    "name": userinfo,
-    "score": 0
-},{
-    "name": "user2",
-    "score": 0
-},{
-    "name": "user3",
-    "score": 0
-},]
+let users = window.history.state;
 
 const usersuu = users.length;
 
@@ -222,7 +213,7 @@ function turn(e){
             }, 500);
         };
         flgFirst = true;
-        console.log(currentUsers);
+        console.log("currentUsers: " + currentUsers);
         console.log(users);
     }
 }
