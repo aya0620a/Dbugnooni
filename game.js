@@ -208,7 +208,7 @@ function turn(e){
                     history.pushState(users, null, 'result.html');
                     location.href = 'result.html';
                 }
-            }, 3000);
+            }, 100);
         }else if((firstcard.number%8) === (div.number%8)){
             users[currentUsers].score+=2;
             console.log(users[currentUsers].score);
@@ -230,7 +230,7 @@ function turn(e){
                     history.pushState(users, null, 'result.html');
                     location.href = 'result.html';
                 }
-            }, 3000);
+            }, 100);
         }else{
             backTimer = setTimeout(function(){
                 div.className = "cardback";
@@ -244,7 +244,7 @@ function turn(e){
                 currentUsers = (currentUsers + 1) % usersuu;
                 let username = document.getElementById("nextplayer");
                 username.innerHTML = `${users[currentUsers].name}さんの番です`;
-            }, 3000);
+            }, 100);
         };
         flgFirst = true;
         console.log("currentUsers: " + currentUsers);
