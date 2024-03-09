@@ -15,25 +15,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-await setDoc(doc(db, "cities", "LA"), {
-  name: "yugo",
-  state: "Kyoto",
-  country: "Nippon"
-});
+export { db };
+// await setDoc(doc(db, "cities", "LA"), {
+//   name: "yugo",
+//   state: "Kyoto",
+//   country: "Nippon"
+// });
 
 
-const docRef = doc(db, "cities", "LA");
-const docSnap = await getDoc(docRef);
+// const docRef = doc(db, "cities", "LA");
+// const docSnap = await getDoc(docRef);
 
-if (docSnap.exists()) {
-  console.log("Document data:", docSnap.data());
-} else {
-  // docSnap.data() will be undefined in this case
-  console.log("No such document!");
-}
+// if (docSnap.exists()) {
+//   console.log("Document data:", docSnap.data());
+// } else {
+//   // docSnap.data() will be undefined in this case
+//   console.log("No such document!");
+// }
 
 
-const unsub = onSnapshot(doc(db, "cities", "LA"), (doc) => {
-    console.log("Current data: ", doc.data());
-});
+// const unsub = onSnapshot(doc(db, "cities", "LA"), (doc) => {
+//     console.log("Current data: ", doc.data());
+// });
 

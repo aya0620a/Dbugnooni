@@ -1,3 +1,6 @@
+import { db } from "./firestore.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
 //カードの作成
 const cards = [{
     "name": "ENTP",
@@ -83,7 +86,17 @@ const cards = [{
 
 let currentUsers = 0;
 
-let users = window.history.state;
+function getUsers(snapShot){
+    const users = [];
+    snapShot.forEach((doc) => {
+        users.push(doc.data());
+    });
+    return users;
+}
+
+
+
+let users;
 
 // let users = [{
 //     "name": "user1",
@@ -106,8 +119,6 @@ let users = window.history.state;
 //     "score": 0,
 //     "bonusscore": 0
 // }]
-
-const usersuu = users.length;
 
 const gameboard = document.getElementById("gameboard");
 
@@ -157,7 +168,10 @@ function shuffle(shuffledCards){
 let shuffledCards;
 
 //画面が表示されたときに実行される
-window.onload = function(){
+window.onload = async function(){
+    const q = collection(db, "users");
+    const snapShot = await getDocs(collection(db,"users"));
+    users = getUsers(snapShot); 
     let username = document.getElementById("nextplayer");
     username.innerHTML = `${users[currentUsers].name}さんの番です`;
     shuffledCards = createShuffledCards();

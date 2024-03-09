@@ -51,6 +51,10 @@ buton.addEventListener('click', async function(){
     const count = await getUserCount();
     const id = String(count + 1);
 
+    if(count >= 4){
+        alert('すでに4人のプレイヤーがいます');
+        return;
+    }
     await createUser(id, user);
 
     location.href = 'select.html';

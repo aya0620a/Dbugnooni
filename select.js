@@ -1,27 +1,34 @@
-const nextbuton=document.getElementById('next');
-nextbuton.addEventListener('click',function(){
-    let users = [];
-    const trlist = document.querySelectorAll('tbody tr');
-    let validflag = true;
-    trlist.forEach((tr)=>{
-        const name = tr.querySelector('input.name').value;
-        const mbti = tr.querySelector('input.mbti').value;
-        const user = {
-            name,
-            mbti,
-            score: 0
-        };
+import { db } from "./firestore.js";
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        if(name === '' || mbti === ''){
-            validflag = false;
-        }
-        users.push(user);
-    })
-    if(!validflag){
-        alert('名前とMBTIを入力してください');
-        return;
+function getUsers(snapShot){
+    const users = [];
+    snapShot.forEach((doc) => {
+        users.push(doc.data());
+    });
+    return users;
+}
+
+function showUsers(users){
+    const trlist = document.querySelectorAll('tbody tr');
+    for(let i=0; i<trlist.length; i++){
+        trlist[i].querySelector('span.name').textContent = "";
+        trlist[i].querySelector('span.mbti').textContent = "";
     }
-    console.log(users);
-    window.history.pushState(users, null, 'game.html')
-    location.href = 'game.html';
+    for(let i=0; i<users.length; i++){
+        trlist[i].querySelector('span.name').textContent = users[i].name;
+        trlist[i].querySelector('span.mbti').textContent = "****";
+    }
+}
+const q = collection(db, "users");
+const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const users = getUsers(querySnapshot);
+    showUsers(users);
+
+    if(users.length === 4){
+        unsubscribe();
+        setTimeout(() => {
+            location.href = 'game.html';
+        }, 3000);
+    }
 });
