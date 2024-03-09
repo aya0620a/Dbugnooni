@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+        
+        <title>設定</title>
+    </head>
+    <body>
+    <h1>MBTI神経衰弱</h1>
+    
+    <main>
+        <p id="num">
+        <label for="kazu">player人数</label>
+        <input type="number"  min=2 max=6 id="kazu">
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th><label>Player</label></th>
+                    <th><label>MBTI</label></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="name" value=""></td>
+                    <td><input type="password" class="mbti" maxlength="4"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="name"></td>
+                    <td><input type="password" class="mbti" maxlength="4"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="name"></td>
+                    <td><input type="password" class="mbti" maxlength="4"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="name"></td>
+                    <td><input type="password" class="mbti" maxlength="4"></td>
+                </tr>  
+            </tbody>
+        </table>
+        
+    </main>
+
+    <div id="next">
+        <button>Next</button>
+    </div>
+    <script src="select.js"></script> 
+    </body>    
+</html>        
