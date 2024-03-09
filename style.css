@@ -24,11 +24,19 @@
     1px 25px 35px rgba(16,16,16,0.2),
     1px 30px 60px rgba(16,16,16,0.4);
 }
-
+html{
+    height: 100%;
+}
 body{ 
+    height: 100%;
     background-image: url(haikei.jpg);
-    background-repeat: no-repeat;
     background-size: cover;
+}
+main{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 /*スタート画面*/
 .button{
