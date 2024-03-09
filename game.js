@@ -85,6 +85,28 @@ let currentUsers = 0;
 
 let users = window.history.state;
 
+// let users = [{
+//     "name": "user1",
+//     "mbti": "ENTP",
+//     "score": 0,
+//     "bonusscore": 0
+// },{
+//     "name": "user2",
+//     "mbti": "INTP",
+//     "score": 0,
+//     "bonusscore": 0
+// },{
+//     "name": "user3",
+//     "mbti": "ENTJ",
+//     "score": 0,
+//     "bonusscore": 0
+// },{
+//     "name": "user4",
+//     "mbti": "INTJ",
+//     "score": 0,
+//     "bonusscore": 0
+// }]
+
 const usersuu = users.length;
 
 const gameboard = document.getElementById("gameboard");
@@ -177,11 +199,16 @@ function turn(e){
                 shuffledCards[firstcard.index].class = "cardfinish";
                 div.innerHTML = "";
                 firstcard.innerHTML = "";
+                //絶対一緒だから、+1*2
+                if(users[currentUsers].mbti === cards[firstcard.number].name){
+                    users[currentUsers].bonusscore += 2;
+                }
                 backTimer = NaN;
-                // if(unitCounts === 16){
-                //     alert("Game Clear");
-                // }
-            }, 500);
+                if(shuffledCards.every(card=>card.class === "cardfinish")){
+                    history.pushState(users, null, 'result.html');
+                    location.href = 'result.html';
+                }
+            }, 100);
         }else if((firstcard.number%8) === (div.number%8)){
             users[currentUsers].score+=2;
             console.log(users[currentUsers].score);
@@ -192,11 +219,18 @@ function turn(e){
                 shuffledCards[firstcard.index].class = "cardfinish";
                 div.innerHTML = "";
                 firstcard.innerHTML = "";
+                if(users[currentUsers].mbti === cards[firstcard.number].name){
+                    users[currentUsers].bonusscore += 1;
+                }
+                if(users[currentUsers].mbti === cards[div.number].name){
+                    users[currentUsers].bonusscore += 1;
+                }
                 backTimer = NaN;
-                // if(unitCounts === 16){
-                //     alert("Game Clear");
-                // }
-            }, 500);
+                if(shuffledCards.every(card=>card.class === "cardfinish")){
+                    history.pushState(users, null, 'result.html');
+                    location.href = 'result.html';
+                }
+            }, 100);
         }else{
             backTimer = setTimeout(function(){
                 div.className = "cardback";
@@ -210,7 +244,7 @@ function turn(e){
                 currentUsers = (currentUsers + 1) % usersuu;
                 let username = document.getElementById("nextplayer");
                 username.innerHTML = `${users[currentUsers].name}さんの番です`;
-            }, 500);
+            }, 100);
         };
         flgFirst = true;
         console.log("currentUsers: " + currentUsers);
