@@ -181,7 +181,7 @@ function turn(e){
     if(div.innerHTML === ""){
         div.className = "cardface";
         shuffledCards[div.index].class = "cardface";
-        div.innerHTML = `<img src="img/${cards[div.number].img}">`;
+        div.innerHTML = `<img src="img/${cards[div.number].img}">`; 
     }else{
         return;
     }
