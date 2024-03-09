@@ -37,8 +37,12 @@ p#num{
     align-items: center;
     justify-content: space-between;
 }
+
+
+/* ゲームプレイ画面 */
 #nextplayer{
-    width: 20%;
+    background-color: transparent;
+    width: 100%;
     font-size: 30px;
     color: green;
     margin: 20px;
@@ -62,17 +66,20 @@ p#num{
 .cardback{
     background-image: url(cardback.jpg);
     background-size: cover;
-    width: 75%;  /* カードの幅を設定 */
-    height: 300px; /* カードの高さを設定 */
+    width: 75%;  
+    height: 300px; 
 }
 
-.card{
-    background-image: url(ESFP.png);
-    background-size: cover;
-    width: 75%;  /* カードの幅を設定 */
-    height: 300px; /* カードの高さを設定 */
+.cardface{ 
+    width: 77%;
+    height: 93%;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
-
+}
+.cardface img{
+    width: 100%;
+    height: 100%;
 }
 
 #game{
@@ -80,6 +87,8 @@ p#num{
 }
 
 .cardfinish{
+    width: 77%;
+    height: 93%;
     opacity: 0;
     cursor: default;
 }
