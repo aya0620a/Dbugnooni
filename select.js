@@ -1,5 +1,5 @@
-const nextbutoon=document.getElementById('next');
-nextbutoon.addEventListener('click',function(){
+const nextbuton=document.getElementById('next');
+nextbuton.addEventListener('click',function(){
     let users = [];
     const trlist = document.querySelectorAll('tbody tr');
     let validflag = true;
