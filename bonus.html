@@ -10,34 +10,26 @@
         <h1>ボーナス加点</h1>
         <table id="point">
             <tr>
-            <th>1位</th>
-            <td>12point</td>
+            <th id="firstpoint">1位</th>
+            <td id="firstname">12point</td>
             </tr>
             <tr>
-            <th>2位</th>
-            <td>9point</td>
+            <th id="secondpoint">2位</th>
+            <td id="secondname">9point</td>
             </tr>
             <tr>
-            <th>3位</th>
-            <td>7point</td>
+            <th id="thirdpoint">3位</th>
+            <td id="thirdname">7point</td>
             </tr>
             <tr>
-            <th>4位</th>
-            <td>5point</td>
-            </tr>
-            <tr>
-            <th>5位</th>
-            <td>3point</td>
-            </tr>
-            <tr>
-            <th>6位</th>
-            <td>0point</td>
+            <th id="fourthpoint">4位</th>
+            <td id="fourthname">5point</td>
             </tr>
         </table>
         <div class="Next" id="next">
             <button>Next</button>
         </div>
-        <script>
+        <script src="bonus.js">
             const nextbutton=document.getElementById('next');
             nextbutton.addEventListener('click',function(){
                 location.href="finale.html"
