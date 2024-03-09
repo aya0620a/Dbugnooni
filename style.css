@@ -1,3 +1,4 @@
+@media screen and (min-width: 768px) {
 /*3Dフォント用*/
 .text {
     top: 50%; 
@@ -215,4 +216,5 @@ td{
     width: 100px;
     text-align: center;
     vertical-align: middle;
+}
 }
