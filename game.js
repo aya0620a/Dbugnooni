@@ -84,7 +84,7 @@ const cards = [{
 let currentUsers = 0;
 
 let users = [{
-    "name": "user1",
+    "name": userinfo,
     "score": 0
 },{
     "name": "user2",
