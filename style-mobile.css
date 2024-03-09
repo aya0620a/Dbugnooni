@@ -147,7 +147,8 @@ td{
     height: 2200px;
     text-align: center;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(7, minmax(0, 1fr));
     grid-gap: 0;
     text-align: center;
     margin: 5%;
@@ -159,14 +160,16 @@ td{
 
 .cardback{
     background-image: url(cardback.jpg);
-    background-size: cover;
-    width: 75%;  
-    height: 300px; 
+    overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
 }
 
 .cardface{ 
-    width: 77%;
-    height: 93%;
+    max-width: 100%;
+    max-height: 100%;
     padding: 0;
     margin: 0;
     cursor: pointer;
