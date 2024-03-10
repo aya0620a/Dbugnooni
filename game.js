@@ -86,8 +86,7 @@ const cards = [{
 
 let currentUsers = 0;
 
-async function loadUsers(){
-    const snapShot = await getDocs(collection(db, "users"));
+function getUsers(snapShot){
     const users = [];
     snapShot.forEach((doc) => {
         users.push(doc.data());
@@ -95,41 +94,20 @@ async function loadUsers(){
     return users;
 }
 
-async function loadCurrentUser(){
-    const id = localStorage.getItem('user_id');
-    const snapShot = await getDoc(doc(db, "users", id));
-    const user = snapShot.data();
-
-    return user;
+async function loadUsers(){
+    const snapShot = await getDocs(collection(db, "users"));
+    return getUsers(snapShot);
 }
 
-let users;
+function shuffle(shuffledCards){
+    for(let i = 0; i < 32; i++){
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = shuffledCards[j];
+        shuffledCards[j] = shuffledCards[i];
+        shuffledCards[i] = temp;
+    }
+}
 
-// let users = [{
-//     "name": "user1",
-//     "mbti": "ENTP",
-//     "score": 0,
-//     "bonusscore": 0
-// },{
-//     "name": "user2",
-//     "mbti": "INTP",
-//     "score": 0,
-//     "bonusscore": 0
-// },{
-//     "name": "user3",
-//     "mbti": "ENTJ",
-//     "score": 0,
-//     "bonusscore": 0
-// },{
-//     "name": "user4",
-//     "mbti": "INTJ",
-//     "score": 0,
-//     "bonusscore": 0
-// }]
-
-const gameboard = document.getElementById("gameboard");
-
-//カードを複製しシャッフルする
 const createShuffledCards = () => {
     let shuffledCards = []; 
     for(let i = 0; i < 16; i++){
@@ -146,20 +124,20 @@ const createShuffledCards = () => {
     return shuffledCards;
 }
 
-//カードをクリックしたときの処理
 const onclick = (e) => {
     if(turnFlag) turn(e);
 }
 
-function showCard(div,card,i){
+function showCard(div, card, i){
     div.onclick = null;
     div.innerHTML = "";
     div.className = card.class;
     div.id = "card" + i;
     div.number = card.num;
     div.index = i;
+
     if(card.class === "cardback"){
-        div.onclick = onclick;
+        div.onclick = turn;
     }
     if(card.class === "cardface"){
         div.innerHTML = `<img src="img/${card.img}">`;
@@ -171,31 +149,21 @@ function showCards(shuffledCards){
     for(let i = 0; i < shuffledCards.length; i++){
         const div = gameboard.children[i];
         const card = shuffledCards[i];
-        showCard(div,card,i);
+        showCard(div, card, i);
     }
 }
 
-//裏返しのカードを表示
 function createCards(){
+    const gameboard = document.getElementById("gameboard");
     for(let i = 0; i < 32; i++){
         const div = document.createElement("div");
-        document.getElementById("gameboard").appendChild(div);
-    }
-}
-
-//カードをシャッフルする
-function shuffle(shuffledCards){
-    for(let i = 0; i < 32; i++){
-        let j = Math.floor(Math.random() * (i + 1));
-        let temp = shuffledCards[j];
-        shuffledCards[j] = shuffledCards[i];
-        shuffledCards[i] = temp;
+        gameboard.appendChild(div);
     }
 }
 
 function isHost(){
     const id = localStorage.getItem('user_id');
-    return id === "3";
+    return id === "1";
 }
 
 function getShuffledCards(snapShot){
@@ -225,12 +193,18 @@ function showDrawUser() {
     username.innerHTML = `${getDrawUser().name}さんの番です`;
 }
 
-let turnFlag = false;
+let users;
 let drawUserId;
+let turnFlag = false;
 
 //画面が表示されたときに実行される
 window.onload = async function(){
     users = await loadUsers();
+
+    onSnapshot(collection(db, "users"), (querySnapshot) => {
+        users = getUsers(querySnapshot);
+    });
+
     createCards();
     const id = localStorage.getItem('user_id');
     onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
@@ -322,8 +296,7 @@ async function turn(e){
         firstcard = div;
         flgFirst = false;
     }else{
-        // if(firstcard.number === div.number){
-        if(true){
+        if(true || firstcard.number === div.number){
             await addScore(drawUser, 1);  
             backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
