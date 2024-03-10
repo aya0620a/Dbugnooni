@@ -1,18 +1,5 @@
-import { db } from "./firestore.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-async function loadUsers(){
-    const users = [];
-    const snapShot = await getDocs(collection(db,"users"));
-
-    snapShot.forEach((doc) => {
-        users.push(doc.data());
-    });
-    return users;
-}
-
 window.onload = async function(){
-    const users = await loadUsers();
+    const users = history.state;
     users.sort((a, b) => b.score - a.score);
 
     document.getElementById('firstname').innerHTML = users[0].name;
