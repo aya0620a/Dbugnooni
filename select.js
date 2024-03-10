@@ -32,3 +32,5 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
         }, 3000);
     }
 });
+
+console.log(localStorage.getItem('user_id'));

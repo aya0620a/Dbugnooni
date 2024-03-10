@@ -1,5 +1,5 @@
 import { db } from "./firestore.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, doc, getDocs, getDoc , onSnapshot, writeBatch} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 //カードの作成
 const cards = [{
@@ -86,7 +86,8 @@ const cards = [{
 
 let currentUsers = 0;
 
-function getUsers(snapShot){
+async function loadUsers(){
+    const snapShot = await getDocs(collection(db, "users"));
     const users = [];
     snapShot.forEach((doc) => {
         users.push(doc.data());
@@ -94,7 +95,26 @@ function getUsers(snapShot){
     return users;
 }
 
+async function loadCurrentUser(){
+    const id = localStorage.getItem('user_id');
+    const snapShot = await getDoc(doc(db, "users", id));
+    const user = snapShot.data();
 
+    return user;
+}
+
+let turnFlag = false;
+
+function judgeTurn(){
+    const id = localStorage.getItem('user_id');
+    const unsubscribe = onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
+        const drawUserId = doc.data().id;
+        turnFlag = (id === drawUserId);
+
+    });
+}
+
+judgeTurn();
 
 let users;
 
@@ -132,13 +152,16 @@ const createShuffledCards = () => {
         shuffledCards.push(temp2);
     }
     shuffle(shuffledCards);
+    shuffledCards.forEach((card, index) => {
+        card.position = index;
+    });
 
     return shuffledCards;
 }
 
 //カードをクリックしたときの処理
 const onclick = (e) => {
-    turn(e);
+    if(turnFlag) turn(e);
 }
 
 //裏返しのカードを表示
@@ -165,22 +188,52 @@ function shuffle(shuffledCards){
     }
 }
 
+function isHost(){
+    const id = localStorage.getItem('user_id');
+    return id === "3";
+}
+
+function getShuffledCards(snapShot){
+    const shuffledCards = [];
+    snapShot.forEach((doc) => {
+        shuffledCards.push(doc.data());
+    });
+    shuffledCards.sort((a, b) => a.position - b.position);
+
+    return shuffledCards;
+}
+
 let shuffledCards;
 
 //画面が表示されたときに実行される
 window.onload = async function(){
-    const q = collection(db, "users");
-    const snapShot = await getDocs(collection(db,"users"));
-    users = getUsers(snapShot); 
+    users = await loadUsers();
     let username = document.getElementById("nextplayer");
     username.innerHTML = `${users[currentUsers].name}さんの番です`;
-    shuffledCards = createShuffledCards();
 
-    displayCards(shuffledCards);
+    if(isHost()){
+        const shuffledCards = createShuffledCards();
+        const batch = writeBatch(db);
+        for(let i = 0; i < shuffledCards.length; i++){
+            const cardId = String(i);
+            const card = shuffledCards[i];
+            const cardRef = doc(db, "cards", cardId);
+            batch.set(cardRef, card);
+        }
+        await batch.commit();
+    }
+
+    const unsubscribe = onSnapshot(collection(db, "cards"), (querySnapshot) => {
+        shuffledCards = getShuffledCards(querySnapshot);
+        displayCards(shuffledCards);
+    });
 }
 
 //カードを一枚引いたかどうかの判定
 let flgFirst = true; 
+
+//最初に引いたカード
+let firstcard;
 
 //連続処理防止
 let backTimer;
@@ -205,7 +258,7 @@ function turn(e){
     }else{
         if(firstcard.number === div.number){
             users[currentUsers].score++;
-            console.log(users[currentUsers].score);
+            // console.log(users[currentUsers].score);
             backTimer = setTimeout(function(){
                 div.className = "cardfinish";
                 shuffledCards[div.index].class = "cardfinish";
@@ -222,7 +275,7 @@ function turn(e){
                     history.pushState(users, null, 'result.html');
                     location.href = 'result.html';
                 }
-            }, 100);
+            }, 1000);
         }else if((firstcard.number%8) === (div.number%8)){
             users[currentUsers].score+=2;
             console.log(users[currentUsers].score);
@@ -244,7 +297,7 @@ function turn(e){
                     history.pushState(users, null, 'result.html');
                     location.href = 'result.html';
                 }
-            }, 100);
+            }, 1000);
         }else{
             backTimer = setTimeout(function(){
                 div.className = "cardback";
@@ -255,14 +308,13 @@ function turn(e){
                 firstcard.innerHTML = "";
                 firstcard = null;
                 backTimer = NaN;
-                currentUsers = (currentUsers + 1) % usersuu;
+                // currentUsers = (currentUsers + 1) % usersuu;
+
                 let username = document.getElementById("nextplayer");
                 username.innerHTML = `${users[currentUsers].name}さんの番です`;
-            }, 100);
+            }, 1000);
         };
         flgFirst = true;
-        console.log("currentUsers: " + currentUsers);
-        console.log(users);
     }
 }
 

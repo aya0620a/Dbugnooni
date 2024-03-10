@@ -1,19 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, doc, setDoc, collection, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCTDwyZQkEgMiSy4LcyUpn5EiePVAABscc",
-    authDomain: "debugnooni.firebaseapp.com",
-    databaseURL: "https://debugnooni-default-rtdb.firebaseio.com",
-    projectId: "debugnooni",
-    storageBucket: "debugnooni.appspot.com",
-    messagingSenderId: "366109892524",
-    appId: "1:366109892524:web:dd95667db61c7b61106409",
-    measurementId: "G-PBXXWFYJWJ"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { db } from "./firestore.js";
+import { doc, setDoc, collection, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 function getUser(){
     const name = document.querySelector('input#username').value;
@@ -33,6 +19,8 @@ function getUser(){
     return user;
 }
 
+
+
 async function getUserCount() {
     const snapShot = await getCountFromServer(collection(db, "users"));
     const count = snapShot.data().count;
@@ -49,13 +37,15 @@ buton.addEventListener('click', async function(){
     if(!user) return;
 
     const count = await getUserCount();
-    const id = String(count + 1);
 
     if(count >= 4){
         alert('すでに4人のプレイヤーがいます');
         return;
     }
+
+    const id = String(count + 1);
     await createUser(id, user);
+    localStorage.setItem('user_id', id);
 
     location.href = 'select.html';
 });
