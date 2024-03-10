@@ -1,7 +1,9 @@
 import { db } from "./firestore.js";
-import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch, updateDoc} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, doc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 window.onload = async function(){
+    
+
     let result = document.getElementById('result');
     let maxscore = 0;
     let maxuser = '';
@@ -38,6 +40,8 @@ window.onload = async function(){
     setTimeout(function(){
         location.href = 'bonus.html';
     }, 10000);
+
+
 
 }
 
