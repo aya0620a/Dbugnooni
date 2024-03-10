@@ -322,8 +322,7 @@ async function turn(e){
         firstcard = div;
         flgFirst = false;
     }else{
-        // if(firstcard.number === div.number){
-        if(true){
+        if(firstcard.number === div.number){
             await addScore(drawUser, 1);  
             backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
