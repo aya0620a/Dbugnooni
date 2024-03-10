@@ -1,5 +1,5 @@
 import { db } from "./firestore.js";
-import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch, updateDoc} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 //カードの作成
 const cards = [{
@@ -158,18 +158,25 @@ function showCard(div,card,i){
     div.id = "card" + i;
     div.number = card.num;
     div.index = i;
+    if(card.class === "cardface"){
+        div.innerHTML = `<img src="img/${card.img}">`;
+    }else{
+        div.innerHTML = "";
+    }
 }
 
-function showCards(div,card,i){
-    for(let i = 0; i < 32; i++){
+function showCards(shuffledCards){
+    const gameboard = document.getElementById("gameboard");
+    for(let i = 0; i < shuffledCards.length; i++){
+        const div = gameboard.children[i];
+        const card = shuffledCards[i];
         showCard(div,card,i);
     }
 }
 
 //裏返しのカードを表示
-const displayCards = (shuffledCards) => {
+function createCards(){
     for(let i = 0; i < 32; i++){
-        const card = shuffledCards[i];
         const div = document.createElement("div");
         document.getElementById("gameboard").appendChild(div);
     }
@@ -224,7 +231,7 @@ let drawUserId;
 //画面が表示されたときに実行される
 window.onload = async function(){
     users = await loadUsers();
-    
+    createCards();
     const id = localStorage.getItem('user_id');
     onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
         drawUserId = doc.data().id;
@@ -246,7 +253,7 @@ window.onload = async function(){
 
     onSnapshot(collection(db, "cards"), (querySnapshot) => {
         shuffledCards = getShuffledCards(querySnapshot);
-        displayCards(shuffledCards);
+        showCards(shuffledCards);
     });
 }
 
@@ -259,32 +266,47 @@ let firstcard;
 //連続処理防止
 let backTimer;
 
-function face(div) {
+async function face(div) {
     div.className = "cardface";
     div.innerHTML = `<img src="img/${cards[div.number].img}">`;
     div.onclick = null;
+
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardface"
+    });
 }
 
-function finish(div) {
+async function finish(div) {
     div.className = "cardfinish";
     div.innerHTML = "";
+
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardfinish"
+    });
 }
 
-function back(div) {
+async function back(div) {
     div.className = "cardback";
     div.innerHTML = "";
     div.onclick = onclick;
+
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardback"
+    });
 }
 
 //裏返しの処理
-function turn(e){
+async function turn(e){
     let div = e.target;
 
     if(backTimer){
         return;
     };
     if(div.innerHTML === ""){
-        face(div);
+        await face(div);
     }else{
         return;
     }
@@ -295,10 +317,10 @@ function turn(e){
         if(firstcard.number === div.number){
             users[currentUsers].score++;
             // console.log(users[currentUsers].score);
-            backTimer = setTimeout(function(){
+            backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
-                finish(div);
-                finish(firstcard);
+                await finish(div);
+                await finish(firstcard);
                 //絶対一緒だから、+1*2
                 if(users[currentUsers].mbti === cards[firstcard.number].name){
                     users[currentUsers].bonusscore += 2;
@@ -312,9 +334,9 @@ function turn(e){
         }else if((firstcard.number%8) === (div.number%8)){
             users[currentUsers].score+=2;
             console.log(users[currentUsers].score);
-            backTimer = setTimeout(function(){
-                finish(div);
-                finish(firstcard);
+            backTimer = setTimeout(async function(){
+                await finish(div);
+                await finish(firstcard);
                 if(users[currentUsers].mbti === cards[firstcard.number].name){
                     users[currentUsers].bonusscore += 1;
                 }
@@ -329,8 +351,8 @@ function turn(e){
             }, 1000);
         }else{
             backTimer = setTimeout(async function(){
-                back(div);
-                back(firstcard);
+                await back(div);
+                await back(firstcard);
                 firstcard = null;
                 backTimer = NaN;
                 await nextUser();
