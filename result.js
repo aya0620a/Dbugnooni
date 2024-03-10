@@ -1,11 +1,18 @@
-let users = window.history.state;
-// console.log(users);
+import { db } from "./firestore.js";
+import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch, updateDoc} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-window.onload = function(){
+window.onload = async function(){
     let result = document.getElementById('result');
     let maxscore = 0;
     let maxuser = '';
     let tmpuser = '';
+    let users=[];
+
+    const snapshot = await getDocs(collection(db,"users"));
+    snapshot.forEach((doc)=>{
+        users.push(doc.data())
+    })
+
     users.forEach((user)=>{
         
         for(let i = 1; i < users.length; i++){
