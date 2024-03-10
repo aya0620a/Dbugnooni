@@ -152,16 +152,25 @@ const onclick = (e) => {
     turn(e);
 }
 
+function showCard(div,card,i){
+    div.onclick = onclick;
+    div.className = card.class;
+    div.id = "card" + i;
+    div.number = card.num;
+    div.index = i;
+}
+
+function showCards(div,card,i){
+    for(let i = 0; i < 32; i++){
+        showCard(div,card,i);
+    }
+}
+
 //裏返しのカードを表示
 const displayCards = (shuffledCards) => {
     for(let i = 0; i < 32; i++){
         const card = shuffledCards[i];
         const div = document.createElement("div");
-        div.onclick = onclick;
-        div.className = card.class;
-        div.id = "card" + i;
-        div.number = card.num;
-        div.index = i;
         document.getElementById("gameboard").appendChild(div);
     }
 }
