@@ -227,6 +227,8 @@ window.onload = async function(){
 
     onSnapshot(collection(db, "cards"), (querySnapshot) => {
         const shuffledCards = getShuffledCards(querySnapshot);
+        if (shuffledCards.length === 0) return;
+
         showCards(shuffledCards);
         if(shuffledCards.every(card=>card.class === "cardfinish")){
             history.pushState(users, null, 'result.html');
