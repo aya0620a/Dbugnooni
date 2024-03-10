@@ -104,13 +104,13 @@ async function loadCurrentUser(){
 }
 
 let turnFlag = false;
+let drawUserId;
 
 function judgeTurn(){
     const id = localStorage.getItem('user_id');
     const unsubscribe = onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
-        const drawUserId = doc.data().id;
+        drawUserId = doc.data().id;
         turnFlag = (id === drawUserId);
-
     });
 }
 
@@ -203,6 +203,11 @@ function getShuffledCards(snapShot){
     return shuffledCards;
 }
 
+async function nextUser() {
+    const userId = (drawUserId + 1) % users.length;
+    await setDoc(doc(db, "status", "drawUserId"), userId);
+}
+
 let shuffledCards;
 
 //画面が表示されたときに実行される
@@ -247,6 +252,7 @@ function turn(e){
     };
     if(div.innerHTML === ""){
         div.className = "cardface";
+        div.onclick = null;
         shuffledCards[div.index].class = "cardface";
         div.innerHTML = `<img src="img/${cards[div.number].img}">`; 
     }else{
@@ -299,17 +305,17 @@ function turn(e){
                 }
             }, 1000);
         }else{
-            backTimer = setTimeout(function(){
+            backTimer = setTimeout(async function(){
                 div.className = "cardback";
                 shuffledCards[div.index].class = "cardback";
                 div.innerHTML = "";
                 firstcard.className = "cardback";
+                firstcard.onclick = onclick;
                 shuffledCards[firstcard.index].class = "cardback";
                 firstcard.innerHTML = "";
                 firstcard = null;
                 backTimer = NaN;
-                // currentUsers = (currentUsers + 1) % usersuu;
-
+                await nextUser();
                 let username = document.getElementById("nextplayer");
                 username.innerHTML = `${users[currentUsers].name}さんの番です`;
             }, 1000);
