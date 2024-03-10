@@ -148,8 +148,7 @@ const createShuffledCards = () => {
 
 //カードをクリックしたときの処理
 const onclick = (e) => {
-    // if(turnFlag) turn(e);
-    turn(e);
+    if(turnFlag) turn(e);
 }
 
 function showCard(div,card,i){
@@ -196,7 +195,7 @@ function shuffle(shuffledCards){
 
 function isHost(){
     const id = localStorage.getItem('user_id');
-    return id === "3";
+    return id === "1";
 }
 
 function getShuffledCards(snapShot){
@@ -323,8 +322,7 @@ async function turn(e){
         firstcard = div;
         flgFirst = false;
     }else{
-        // if(firstcard.number === div.number){
-        if(true){
+        if(firstcard.number === div.number){
             await addScore(drawUser, 1);  
             backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
