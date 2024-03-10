@@ -137,7 +137,7 @@ function showCard(div, card, i){
     div.index = i;
 
     if(card.class === "cardback"){
-        div.onclick = turn;
+        div.onclick = onclick;
     }
     if(card.class === "cardface"){
         div.innerHTML = `<img src="img/${card.img}">`;
@@ -296,7 +296,7 @@ async function turn(e){
         firstcard = div;
         flgFirst = false;
     }else{
-        if(true || firstcard.number === div.number){
+        if(firstcard.number === div.number){
             await addScore(drawUser, 1);  
             backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
