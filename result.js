@@ -1,5 +1,5 @@
 import { db } from "./firestore.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, getDocs, doc, writeBatch, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 async function loadUsers(){
     const users = [];
@@ -25,6 +25,15 @@ window.onload = async function(){
     document.getElementById('fourthpoint').innerHTML = `${users[3].score}pt`;
 
     setTimeout(function(){
+        history.pushState(users, null, "bonus.html");
         location.href = 'bonus.html';
     }, 10000);
+
+    const batch = writeBatch(db);
+    for(let i = 0; i < 32; i++){
+        batch.delete(doc(db, "cards", String(i)));
+    }
+    await batch.commit();
+
+    await setDoc(doc(db, "status", "drawUserId"), { id: "1" });
 }
