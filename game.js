@@ -306,7 +306,7 @@ async function turn(e){
                     await addBonusScore(drawUser, 2);
                 }
                 backTimer = NaN;
-            }, 1000);
+            }, 5000);
         }else if((firstcard.number%8) === (div.number%8)){
             await addScore(drawUser, 2);
             backTimer = setTimeout(async function(){
@@ -319,7 +319,7 @@ async function turn(e){
                     await addBonusScore(drawUser, 1);
                 }
                 backTimer = NaN;
-            }, 1000);
+            }, 5000);
         }else{
             backTimer = setTimeout(async function(){
                 await back(div);
@@ -327,7 +327,7 @@ async function turn(e){
                 firstcard = null;
                 backTimer = NaN;
                 await nextUser();
-            }, 1000);
+            }, 5000);
         };
         flgFirst = true;
     }
