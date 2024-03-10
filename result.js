@@ -1,22 +1,20 @@
-let users = window.history.state;
-// console.log(users);
+import { db } from "./firestore.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-window.onload = function(){
-    let result = document.getElementById('result');
-    let maxscore = 0;
-    let maxuser = '';
-    let tmpuser = '';
-    users.forEach((user)=>{
-        
-        for(let i = 1; i < users.length; i++){
-            if(users[i].score > users[i-1].score){
-                tmpuser = users[i-1];
-                users[i-1] = users[i];
-                users[i] = tmpuser; 
-            }
-        }
+async function loadUsers(){
+    const users = [];
+    const snapShot = await getDocs(collection(db,"users"));
+
+    snapShot.forEach((doc) => {
+        users.push(doc.data());
     });
-    // console.log(users);
+    return users;
+}
+
+window.onload = async function(){
+    const users = await loadUsers();
+    users.sort((a, b) => b.score - a.score);
+
     document.getElementById('firstname').innerHTML = users[0].name;
     document.getElementById('firstpoint').innerHTML = `${users[0].score}pt`;
     document.getElementById('secondname').innerHTML = users[1].name;
@@ -26,11 +24,7 @@ window.onload = function(){
     document.getElementById('fourthname').innerHTML = users[3].name;
     document.getElementById('fourthpoint').innerHTML = `${users[3].score}pt`;
 
-    history.pushState(users, null, 'bonus.html');
-
     setTimeout(function(){
         location.href = 'bonus.html';
     }, 10000);
-
 }
-

@@ -1,6 +1,18 @@
-let users = window.history.state;
+import { db } from "./firestore.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-window.onload = function(){
+async function loadUsers(){
+    const users = [];
+    const snapShot = await getDocs(collection(db,"users"));
+
+    snapShot.forEach((doc) => {
+        users.push(doc.data());
+    });
+    return users;
+}
+
+window.onload = async function(){
+    const users = await loadUsers();
     users.sort((a,b) => {
         if((a.score + a.bonusscore) > (b.score + b.bonusscore)){
             return -1;

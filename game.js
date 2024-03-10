@@ -1,5 +1,5 @@
 import { db } from "./firestore.js";
-import { collection, doc, getDocs, getDoc , onSnapshot, writeBatch} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch, updateDoc} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 //カードの作成
 const cards = [{
@@ -103,19 +103,6 @@ async function loadCurrentUser(){
     return user;
 }
 
-let turnFlag = false;
-let drawUserId;
-
-function judgeTurn(){
-    const id = localStorage.getItem('user_id');
-    const unsubscribe = onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
-        drawUserId = doc.data().id;
-        turnFlag = (id === drawUserId);
-    });
-}
-
-judgeTurn();
-
 let users;
 
 // let users = [{
@@ -161,19 +148,38 @@ const createShuffledCards = () => {
 
 //カードをクリックしたときの処理
 const onclick = (e) => {
-    if(turnFlag) turn(e);
+    // if(turnFlag) turn(e);
+    turn(e);
+}
+
+function showCard(div,card,i){
+    div.onclick = null;
+    div.innerHTML = "";
+    div.className = card.class;
+    div.id = "card" + i;
+    div.number = card.num;
+    div.index = i;
+    if(card.class === "cardback"){
+        div.onclick = onclick;
+    }
+    if(card.class === "cardface"){
+        div.innerHTML = `<img src="img/${card.img}">`;
+    }
+}
+
+function showCards(shuffledCards){
+    const gameboard = document.getElementById("gameboard");
+    for(let i = 0; i < shuffledCards.length; i++){
+        const div = gameboard.children[i];
+        const card = shuffledCards[i];
+        showCard(div,card,i);
+    }
 }
 
 //裏返しのカードを表示
-const displayCards = (shuffledCards) => {
+function createCards(){
     for(let i = 0; i < 32; i++){
-        const card = shuffledCards[i];
         const div = document.createElement("div");
-        div.onclick = onclick;
-        div.className = card.class;
-        div.id = "card" + i;
-        div.number = card.num;
-        div.index = i;
         document.getElementById("gameboard").appendChild(div);
     }
 }
@@ -204,17 +210,35 @@ function getShuffledCards(snapShot){
 }
 
 async function nextUser() {
-    const userId = (drawUserId + 1) % users.length;
-    await setDoc(doc(db, "status", "drawUserId"), userId);
+    const drawUserIdNumber = Number(drawUserId) - 1;
+    const nextUserIdNumber = (drawUserIdNumber + 1) % users.length;
+    const userId = String(nextUserIdNumber + 1);
+    await setDoc(doc(db, "status", "drawUserId"), { id: String(userId) });
 }
 
-let shuffledCards;
+function getDrawUser() {
+    const drawUserIdNumber = Number(drawUserId) - 1;
+    return users[drawUserIdNumber];
+}
+
+function showDrawUser() {
+    let username = document.getElementById("nextplayer");
+    username.innerHTML = `${getDrawUser().name}さんの番です`;
+}
+
+let turnFlag = false;
+let drawUserId;
 
 //画面が表示されたときに実行される
 window.onload = async function(){
     users = await loadUsers();
-    let username = document.getElementById("nextplayer");
-    username.innerHTML = `${users[currentUsers].name}さんの番です`;
+    createCards();
+    const id = localStorage.getItem('user_id');
+    onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
+        drawUserId = doc.data().id;
+        turnFlag = (id === drawUserId);
+        showDrawUser();
+    });
 
     if(isHost()){
         const shuffledCards = createShuffledCards();
@@ -228,9 +252,13 @@ window.onload = async function(){
         await batch.commit();
     }
 
-    const unsubscribe = onSnapshot(collection(db, "cards"), (querySnapshot) => {
-        shuffledCards = getShuffledCards(querySnapshot);
-        displayCards(shuffledCards);
+    onSnapshot(collection(db, "cards"), (querySnapshot) => {
+        const shuffledCards = getShuffledCards(querySnapshot);
+        showCards(shuffledCards);
+        if(shuffledCards.every(card=>card.class === "cardfinish")){
+            history.pushState(users, null, 'result.html');
+            location.href = 'result.html';
+        }
     });
 }
 
@@ -243,18 +271,51 @@ let firstcard;
 //連続処理防止
 let backTimer;
 
+async function face(div) {
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardface"
+    });
+}
+
+async function finish(div) {
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardfinish"
+    });
+}
+
+async function back(div) {
+    const cardId = String(div.index);
+    await updateDoc(doc(db, "cards", cardId), {
+        class: "cardback"
+    });
+}
+
+async function addScore(user, score) {
+    const newScore = user.score + score;
+    await updateDoc(doc(db, "users", drawUserId), {
+        score: newScore
+    });
+}
+
+async function addBonusScore(user, bonusscore) {
+    const newScore = user.bonusscore + bonusscore;
+    await updateDoc(doc(db, "users", drawUserId), {
+        bonusscore: newScore
+    });
+}
+
 //裏返しの処理
-function turn(e){
+async function turn(e){
     let div = e.target;
+    const drawUser = getDrawUser();
 
     if(backTimer){
         return;
     };
     if(div.innerHTML === ""){
-        div.className = "cardface";
-        div.onclick = null;
-        shuffledCards[div.index].class = "cardface";
-        div.innerHTML = `<img src="img/${cards[div.number].img}">`; 
+        await face(div);
     }else{
         return;
     }
@@ -262,62 +323,40 @@ function turn(e){
         firstcard = div;
         flgFirst = false;
     }else{
-        if(firstcard.number === div.number){
-            users[currentUsers].score++;
-            // console.log(users[currentUsers].score);
-            backTimer = setTimeout(function(){
+        // if(firstcard.number === div.number){
+        if(true){
+            await addScore(drawUser, 1);  
+            backTimer = setTimeout(async function(){
                 div.className = "cardfinish";
-                shuffledCards[div.index].class = "cardfinish";
-                firstcard.className = "cardfinish";
-                shuffledCards[firstcard.index].class = "cardfinish";
-                div.innerHTML = "";
-                firstcard.innerHTML = "";
+                await finish(div);
+                await finish(firstcard);
                 //絶対一緒だから、+1*2
-                if(users[currentUsers].mbti === cards[firstcard.number].name){
-                    users[currentUsers].bonusscore += 2;
+                if(drawUser.mbti === cards[firstcard.number].name){
+                    await addBonusScore(drawUser, 2);
                 }
                 backTimer = NaN;
-                if(shuffledCards.every(card=>card.class === "cardfinish")){
-                    history.pushState(users, null, 'result.html');
-                    location.href = 'result.html';
-                }
             }, 1000);
         }else if((firstcard.number%8) === (div.number%8)){
-            users[currentUsers].score+=2;
+            await addScore(drawUser, 2);
             console.log(users[currentUsers].score);
-            backTimer = setTimeout(function(){
-                div.className = "cardfinish";
-                shuffledCards[div.index].class = "cardfinish";
-                firstcard.className = "cardfinish";
-                shuffledCards[firstcard.index].class = "cardfinish";
-                div.innerHTML = "";
-                firstcard.innerHTML = "";
-                if(users[currentUsers].mbti === cards[firstcard.number].name){
-                    users[currentUsers].bonusscore += 1;
+            backTimer = setTimeout(async function(){
+                await finish(div);
+                await finish(firstcard);
+                if(drawUser.mbti === cards[firstcard.number].name){
+                    await addBonusScore(drawUser, 1);
                 }
-                if(users[currentUsers].mbti === cards[div.number].name){
-                    users[currentUsers].bonusscore += 1;
+                if(drawUser.mbti === cards[div.number].name){
+                    await addBonusScore(drawUser, 1);
                 }
                 backTimer = NaN;
-                if(shuffledCards.every(card=>card.class === "cardfinish")){
-                    history.pushState(users, null, 'result.html');
-                    location.href = 'result.html';
-                }
             }, 1000);
         }else{
             backTimer = setTimeout(async function(){
-                div.className = "cardback";
-                shuffledCards[div.index].class = "cardback";
-                div.innerHTML = "";
-                firstcard.className = "cardback";
-                firstcard.onclick = onclick;
-                shuffledCards[firstcard.index].class = "cardback";
-                firstcard.innerHTML = "";
+                await back(div);
+                await back(firstcard);
                 firstcard = null;
                 backTimer = NaN;
                 await nextUser();
-                let username = document.getElementById("nextplayer");
-                username.innerHTML = `${users[currentUsers].name}さんの番です`;
             }, 1000);
         };
         flgFirst = true;
