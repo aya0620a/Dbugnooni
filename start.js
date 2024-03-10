@@ -13,7 +13,8 @@ function getUser(){
     const user = {
         name,
         mbti,
-        score: 0
+        score: 0,
+        bonusscore: 0
     };
 
     return user;
