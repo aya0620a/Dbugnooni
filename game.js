@@ -1,5 +1,5 @@
 import { db } from "./firestore.js";
-import { collection, doc, getDocs, getDoc , onSnapshot, writeBatch} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, doc, getDocs, getDoc, setDoc, onSnapshot, writeBatch} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 //カードの作成
 const cards = [{
@@ -103,19 +103,6 @@ async function loadCurrentUser(){
     return user;
 }
 
-let turnFlag = false;
-let drawUserId;
-
-function judgeTurn(){
-    const id = localStorage.getItem('user_id');
-    const unsubscribe = onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
-        drawUserId = doc.data().id;
-        turnFlag = (id === drawUserId);
-    });
-}
-
-judgeTurn();
-
 let users;
 
 // let users = [{
@@ -204,17 +191,36 @@ function getShuffledCards(snapShot){
 }
 
 async function nextUser() {
-    const userId = (drawUserId + 1) % users.length;
-    await setDoc(doc(db, "status", "drawUserId"), userId);
+    const drawUserIdNumber = Number(drawUserId) - 1;
+    const nextUserIdNumber = (drawUserIdNumber + 1) % users.length;
+    const userId = String(nextUserIdNumber + 1);
+    await setDoc(doc(db, "status", "drawUserId"), { id: String(userId) });
+}
+
+function drawUser() {
+    const drawUserIdNumber = Number(drawUserId) - 1;
+    return users[drawUserIdNumber];
+}
+
+function showDrawUser() {
+    let username = document.getElementById("nextplayer");
+    username.innerHTML = `${drawUser().name}さんの番です`;
 }
 
 let shuffledCards;
+let turnFlag = false;
+let drawUserId;
 
 //画面が表示されたときに実行される
 window.onload = async function(){
     users = await loadUsers();
-    let username = document.getElementById("nextplayer");
-    username.innerHTML = `${users[currentUsers].name}さんの番です`;
+    
+    const id = localStorage.getItem('user_id');
+    onSnapshot(doc(db, "status", "drawUserId"), (doc) => {
+        drawUserId = doc.data().id;
+        turnFlag = (id === drawUserId);
+        showDrawUser();
+    });
 
     if(isHost()){
         const shuffledCards = createShuffledCards();
@@ -228,7 +234,7 @@ window.onload = async function(){
         await batch.commit();
     }
 
-    const unsubscribe = onSnapshot(collection(db, "cards"), (querySnapshot) => {
+    onSnapshot(collection(db, "cards"), (querySnapshot) => {
         shuffledCards = getShuffledCards(querySnapshot);
         displayCards(shuffledCards);
     });
@@ -316,8 +322,6 @@ function turn(e){
                 firstcard = null;
                 backTimer = NaN;
                 await nextUser();
-                let username = document.getElementById("nextplayer");
-                username.innerHTML = `${users[currentUsers].name}さんの番です`;
             }, 1000);
         };
         flgFirst = true;
