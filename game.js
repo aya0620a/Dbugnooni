@@ -84,8 +84,6 @@ const cards = [{
     "class": "cardback"
 }];
 
-let currentUsers = 0;
-
 function getUsers(snapShot){
     const users = [];
     snapShot.forEach((doc) => {
@@ -301,7 +299,6 @@ async function turn(e){
         if(firstcard.number === div.number){
             await addScore(drawUser, 1);  
             backTimer = setTimeout(async function(){
-                div.className = "cardfinish";
                 await finish(div);
                 await finish(firstcard);
                 //絶対一緒だから、+1*2
@@ -312,7 +309,6 @@ async function turn(e){
             }, 1000);
         }else if((firstcard.number%8) === (div.number%8)){
             await addScore(drawUser, 2);
-            console.log(users[currentUsers].score);
             backTimer = setTimeout(async function(){
                 await finish(div);
                 await finish(firstcard);
