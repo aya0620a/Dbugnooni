@@ -148,7 +148,8 @@ const createShuffledCards = () => {
 
 //カードをクリックしたときの処理
 const onclick = (e) => {
-    if(turnFlag) turn(e);
+    // if(turnFlag) turn(e);
+    turn(e);
 }
 
 //裏返しのカードを表示
@@ -249,6 +250,23 @@ let firstcard;
 //連続処理防止
 let backTimer;
 
+function face(div) {
+    div.className = "cardface";
+    div.innerHTML = `<img src="img/${cards[div.number].img}">`;
+    div.onclick = null;
+}
+
+function finish(div) {
+    div.className = "cardfinish";
+    div.innerHTML = "";
+}
+
+function back(div) {
+    div.className = "cardback";
+    div.innerHTML = "";
+    div.onclick = onclick;
+}
+
 //裏返しの処理
 function turn(e){
     let div = e.target;
@@ -257,10 +275,7 @@ function turn(e){
         return;
     };
     if(div.innerHTML === ""){
-        div.className = "cardface";
-        div.onclick = null;
-        shuffledCards[div.index].class = "cardface";
-        div.innerHTML = `<img src="img/${cards[div.number].img}">`; 
+        face(div);
     }else{
         return;
     }
@@ -273,11 +288,8 @@ function turn(e){
             // console.log(users[currentUsers].score);
             backTimer = setTimeout(function(){
                 div.className = "cardfinish";
-                shuffledCards[div.index].class = "cardfinish";
-                firstcard.className = "cardfinish";
-                shuffledCards[firstcard.index].class = "cardfinish";
-                div.innerHTML = "";
-                firstcard.innerHTML = "";
+                finish(div);
+                finish(firstcard);
                 //絶対一緒だから、+1*2
                 if(users[currentUsers].mbti === cards[firstcard.number].name){
                     users[currentUsers].bonusscore += 2;
@@ -292,12 +304,8 @@ function turn(e){
             users[currentUsers].score+=2;
             console.log(users[currentUsers].score);
             backTimer = setTimeout(function(){
-                div.className = "cardfinish";
-                shuffledCards[div.index].class = "cardfinish";
-                firstcard.className = "cardfinish";
-                shuffledCards[firstcard.index].class = "cardfinish";
-                div.innerHTML = "";
-                firstcard.innerHTML = "";
+                finish(div);
+                finish(firstcard);
                 if(users[currentUsers].mbti === cards[firstcard.number].name){
                     users[currentUsers].bonusscore += 1;
                 }
@@ -312,13 +320,8 @@ function turn(e){
             }, 1000);
         }else{
             backTimer = setTimeout(async function(){
-                div.className = "cardback";
-                shuffledCards[div.index].class = "cardback";
-                div.innerHTML = "";
-                firstcard.className = "cardback";
-                firstcard.onclick = onclick;
-                shuffledCards[firstcard.index].class = "cardback";
-                firstcard.innerHTML = "";
+                back(div);
+                back(firstcard);
                 firstcard = null;
                 backTimer = NaN;
                 await nextUser();
