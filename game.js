@@ -148,8 +148,7 @@ const createShuffledCards = () => {
 
 //カードをクリックしたときの処理
 const onclick = (e) => {
-    // if(turnFlag) turn(e);
-    turn(e);
+    if(turnFlag) turn(e);
 }
 
 function showCard(div,card,i){
