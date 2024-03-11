@@ -27,7 +27,7 @@ window.onload = async function(){
     setTimeout(function(){
         history.pushState(users, null, "bonus.html");
         location.href = 'bonus.html';
-    }, 10000);
+    }, 5000);
 
     const batch = writeBatch(db);
     for(let i = 0; i < 32; i++){
