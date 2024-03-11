@@ -28,4 +28,8 @@ window.onload = async function(){
     batch.delete(doc(db, "users", "4"));
     await batch.commit();
 
+    setTimeout(function(){
+        location.href = 'start.html';
+        }, 10000);
+
 }
