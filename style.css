@@ -130,8 +130,8 @@ p#num{
     width: auto;
 }
 .selecttable{
-    border-collapse: separate !important;
-    border-spacing: 0;
+    border-collapse: separate;
+    border-spacing: 0 15px;
     text-align: center;
     text-shadow: gray 2px 2px 5px;
     font-size: 2em;
