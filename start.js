@@ -3,7 +3,7 @@ import { doc, setDoc, collection, getCountFromServer } from "https://www.gstatic
 
 function getUser(){
     const name = document.querySelector('input#username').value;
-    const mbti = document.querySelector('input#usermbti').value;
+    const mbti = document.querySelector('select#usermbti').value;
 
     if(name === '' || mbti === ''){
         alert('名前とMBTIを入力してください');
@@ -19,8 +19,6 @@ function getUser(){
 
     return user;
 }
-
-
 
 async function getUserCount() {
     const snapShot = await getCountFromServer(collection(db, "users"));
