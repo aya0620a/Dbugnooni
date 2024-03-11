@@ -28,9 +28,9 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
 
     if(users.length === 4){
         unsubscribe();
-        // setTimeout(() => {
-        //     location.href = 'game.html';
-        // }, 3000);
+        setTimeout(() => {
+            location.href = 'game.html';
+        }, 3000);
     }
 });
 
