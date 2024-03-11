@@ -130,16 +130,39 @@ p#num{
 
 }
 .selecttable{
+    border-collapse: collapse;
     text-align: center;
     text-shadow: gray 2px 2px 5px;
     font-family: serif;
     font-weight: bold;
     margin: 25px auto;
-
+    text-align: left;
+}
+.selecttable tbody tr {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.selecttable tbody tr {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+}
+.selecttable tbody td,
+.selecttable thead th {
+    padding: 0 30px;
+}
+.selecttable tbody td:first-child {
+  border-radius: 20px 0 0 20px;
+}
+.selecttable tbody td:last-child {
+  border-radius: 0 20px 20px 0;
+}
+.selecttable tbody tr {
+    padding-right: 30px;
 }
 th {
-    padding-left: 10px;
-    padding-right: 100px;
+    padding-right: 10px;
 }
 tr{
     line-height: 2;
