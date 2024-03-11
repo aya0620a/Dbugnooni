@@ -39,7 +39,9 @@ main{
     flex-direction: column;
     justify-content: center;
 }
-
+#resultpage main{
+    width: auto;
+}
 
 /*スタート画面*/
 

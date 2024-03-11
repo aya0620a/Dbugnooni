@@ -12,7 +12,7 @@ window.onload = async function(){
     document.getElementById('fourthpoint').innerHTML = `${users[3].score}pt ++${users[3].bonusscore}pt`;
 
     setTimeout(function(){
-        history.pushState(users, null, 'finale.html');
-        location.href = 'finale.html';
+    history.pushState(users, null, 'finale.html');
+    location.href = 'finale.html';
     }, 5000);
 }
