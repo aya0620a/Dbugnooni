@@ -17,7 +17,7 @@ function showUsers(users){
     }
     for(let i=0; i<users.length; i++){
         trlist[i].querySelector('span.name').textContent = users[i].name;
-        trlist[i].querySelector('span.mbti').textContent = "****";
+        trlist[i].querySelector('span.mbti').textContent = users[i].mbti;
     }
 }
 const q = collection(db, "users");
