@@ -16,6 +16,7 @@ function showUsers(users){
         trlist[i].querySelector('span.mbti').textContent = "";
     }
     for(let i=0; i<users.length; i++){
+        trlist[i].style.display = "table-row";
         trlist[i].querySelector('span.name').textContent = users[i].name;
         trlist[i].querySelector('span.mbti').textContent = users[i].mbti;
     }
